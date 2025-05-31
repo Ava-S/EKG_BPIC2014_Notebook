@@ -1,0 +1,16 @@
+# Database Credentials and Information
+db_name: "neo4j"
+uri: "bolt://localhost:7687"
+user: "neo4j"
+password: "bpic2014"
+
+# Dataset information
+dataset_name: "BPIC14"
+semantic_header_path: "bpic14/json_files/BPIC14.json"
+dataset_description_path: "bpic14/json_files/BPIC14_DS.json"
+use_sample: false
+
+# Import settings
+verbose: false
+batch_size: 10000
+use_preprocessed_files: false
