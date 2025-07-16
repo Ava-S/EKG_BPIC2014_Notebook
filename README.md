@@ -34,7 +34,7 @@ Install [Neo4j](https://neo4j.com/download/):
 
 ### PromG
 PromG should be installed as a Python package using pip
-`pip install promg==3.0.1`.
+`pip install promg==2.4.6`.
 
 The source code for PromG can be found [PromG Core Github repository](https://github.com/PromG-dev/promg-core).
 
