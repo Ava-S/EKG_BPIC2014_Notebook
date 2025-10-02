@@ -1,14 +1,10 @@
 # OCED Schema for generic analysis
 
-This repository contains 3 analysis notebooks for 2 datasets.
-- `process_discovery.ipynb` to discover a process
-- `task_analysis.ipynb` to perform task analysis
-- `performance_analysis.ipynb` to perform performance analysis
 
 The user can decide to either do the analysis on BPIC14 or BPIC17.
 
 ## Data
-We provide data and scripts for BPI Challenge 2014 and BPI Challenge 2017; store the original data in CSV format in the directory `bpic<xx>/data`.
+We provide data and scripts for BPI Challenge 2014 and BPI Challenge 2017; store the original data in CSV format in the directory `bpic14/data`.
 The datasets are available from:
 
             Esser, Stefan, & Fahland, Dirk. (2020). Event Data and Queries
@@ -77,7 +73,7 @@ The source code for PromG can be found [PromG Core Github repository](https://gi
   3. Change `512m` to `10G` or `20G`
  
 ### Set configuration file
-- Configuration; `bpic<xx>/config.yaml`
+- Configuration; `bpic14/config.yaml`
   - Set the URI in `config.yaml` to the URI of your server. Default value is `bolt://localhost:7687`.
   - Set the password in `config.yaml` to the password of your server. 
     - Default value for BPIC14 is `bpic2014`.
@@ -94,23 +90,18 @@ The source code for PromG can be found [PromG Core Github repository](https://gi
    - For database settings, see [Create a new graph database](#create_db).
    - Set `use_sample` to True/False
 2. start the Neo4j server
-3. run `import_data.ipynb` first to import the data (this takes 5 to 20 minutes)
-4. We recommend to first discover the process using `process_discovery.ipynb`
-5. Then you can choose to either to a task analysis using `task_analysis.ipynb` or performance analysis using `performance_analysis.ipynb`
+3. run `analysis_and_model.ipynb` first to load the data 
 
 ------------------------
 
 ## Provided Scripts
 ### Notebooks
-- `import_data.ipynb` to import the data
-- `process_discovery.ipynb` to discover a process
-- `task_analysis.ipynb` to perform task analysis
-- `performance_analysis.ipynb` to perform performance analysis
+- `analysis_and_model.ipynb` to import the data
 - `bpic14/bpic14_prepare.py` to prepare the BPIC14 datasets before import
 
 ### Semantic header and dataset description in JSON files 
-- **bpic<xx>/json_files/BPIC<XX>.json** - json file that contains the semantic header for BPIC<XX>
-- **bpic<xx>/json_files/BPIC<XX>_DS.json** - json file that contains a description for the different datasets of BPIC<XX>
+- **bpic14/json_files/BPIC14.json** - json file that contains the semantic header for BPIC14
+- **bpic14/json_files/BPIC14_DS.json** - json file that contains a description for the different datasets of BPIC14
 
 
 
