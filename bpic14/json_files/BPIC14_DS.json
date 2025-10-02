@@ -4,17 +4,7 @@
     "file_directory": "bpic14\\data\\",
     "file_name": "Detail_Change.csv",
     "labels": [
-      "ConfigurationItemAffRecord",
-      "ServiceComponentAffRecord",
-      "ChangeRecord",
-      "ChangeRecordOpenRecord",
-      "ChangeRecordCloseRecord",
-      "ChangeActualStartRecord",
-      "ChangeActualEndRecord",
-      "ChangeRecordPlannedStartRecord",
-      "ChangeRecordPlannedEndRecord",
-      "RequestedEndRecord"
-
+      "GeneralRecord"
     ],
     "add_log": true,
     "seperator": ";",
@@ -283,17 +273,8 @@
     "file_directory": "bpic14\\data\\prepared\\",
     "file_name": "BPIC14Incident.csv",
     "labels": [
-      "ConfigurationItemAffRecord",
-      "ConfigurationItemCByRecord",
-      "ServiceComponentAffRecord",
-      "ServiceComponentCByRecord",
-      "IncidentOpenRecord",
-      "IncidentReopenRecord",
-      "IncidentCloseRecord",
-      "IncidentRecord",
-      "RelatedInteractionRecord",
-      "RelatedChangeRecord",
-      "KMRecord"
+
+      "GeneralRecord"
     ],
     "add_log": true,
     "sample": {
@@ -623,11 +604,7 @@
       "datetime_format": "%d-%m-%Y %H:%M:%S"
     },
     "labels": [
-      "EventRecord",
-      "IncidentRecord",
-      "InteractionRecord",
-      "ResourceRecord",
-      "KMRecord"
+      "GeneralRecord"
     ],
     "add_log": true,
     "add_event_index": true,
@@ -710,12 +687,7 @@
     "file_directory": "bpic14\\data\\prepared\\",
     "file_name": "BPIC14Interaction.csv",
     "labels": [
-      "ConfigurationItemAffRecord",
-      "ServiceComponentAffRecord",
-      "InteractionRecord",
-      "InteractionOpenRecord",
-      "InteractionCloseRecord",
-      "KMRecord"
+      "GeneralRecord"
     ],
     "true_values": [
       "Y"
