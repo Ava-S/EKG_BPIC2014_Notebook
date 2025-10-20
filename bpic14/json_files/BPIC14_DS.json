@@ -476,6 +476,16 @@
         "optional": false
       },
       {
+        "name": "closureCode",
+        "columns": [
+          {
+            "name": "Closure Code",
+            "dtype": "str"
+          }
+        ],
+        "optional": true
+      },
+      {
         "name": "handleTimeHours",
         "columns": [
           {
@@ -496,7 +506,7 @@
         "optional": true
       },
       {
-        "name": "relatedInteractionId",
+        "name": "relatedInteraction",
         "columns": [
           {
             "name": "Related Interaction",
