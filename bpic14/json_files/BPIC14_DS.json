@@ -630,7 +630,7 @@
         "optional": false
       },
       {
-        "name": "timestamp",
+        "name": "dateStamp",
         "columns": [
           {
             "name": "DateStamp"
@@ -652,7 +652,7 @@
         "optional": false
       },
       {
-        "name": "activity",
+        "name": "incidentActivityType",
         "columns": [
           {
             "name": "IncidentActivity_Type"
