@@ -15,5 +15,7 @@ MATCH (c2)<-[r5:AFFECTED_CI_SC]-(ch2:Change)
 RETURN c1,int,inc,c2,ch1,ch2,r1,r2,r3,r4,r5
 
 // get the timeline of an entire CI_SC (including DFs of parallel objects)
-MATCH (ci_sc:CI_SC {sysId:"APP000003_WBS000098"})<-[:CORR]-(e:Event) -[df:DF]-> (e2:Event)-[:CORR]->(ci_sc)
+MATCH (ci_sc:CI_SC {sysId:"WBS000098_APP000003"})<-[:CORR]-(e:Event) -[df:DF]-> (e2:Event)-[:CORR]->(ci_sc)
 RETURN e,df,e2
+
+WBS000253_ADB000028
