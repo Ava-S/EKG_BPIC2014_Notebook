@@ -1,10 +1,7 @@
-# OCED Schema for generic analysis
-
-
-The user can decide to either do the analysis on BPIC14 or BPIC17.
+# EKG BPIC14 Notebook for CAISE Paper
 
 ## Data
-We provide data and scripts for BPI Challenge 2014 and BPI Challenge 2017; store the original data in CSV format in the directory `bpic14/data`.
+We provide data and scripts for BPI Challenge 2014; store the original data in CSV format in the directory `bpic14/data`.
 The datasets are available from:
 
             Esser, Stefan, & Fahland, Dirk. (2020). Event Data and Queries
@@ -87,17 +84,28 @@ The source code for PromG can be found [PromG Core Github repository](https://gi
 
 ## How to use
 1. Set the configuration in `config.yaml`. 
-   - For database settings, see [Create a new graph database](#create_db).
-   - Set `use_sample` to True/False
 2. start the Neo4j server
-3. run `analysis_and_model.ipynb` first to load the data 
+3. run `0_prepare.ipynb` first to load the data
+4. run `1_map_entities_into_pm_concepts+2_assign_types.ipynb` to map the entities into PM concepts and to assign types
+5. run `3_analysis.pynb` to perform the analysis described in the paper.
+ 
 
 ------------------------
 
 ## Provided Scripts
 ### Notebooks
-- `analysis_and_model.ipynb` to import the data
+- `0_prepare.ipynb` 
+- `1_map_entities_into_pm_concepts+2_assign_types.ipynb`
+- `3_analysis.pynb`
+
+### Prepare the data
 - `bpic14/bpic14_prepare.py` to prepare the BPIC14 datasets before import
+
+### Util methods
+- `util/assign_types_functions.py`
+- `util/db_helper_functions.py`
+- `util/enrichment_methods.py`
+- `util/transformer_functions.py`
 
 ### Semantic header and dataset description in JSON files 
 - **bpic14/json_files/BPIC14.json** - json file that contains the semantic header for BPIC14
