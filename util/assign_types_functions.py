@@ -39,7 +39,7 @@ def add_object_type_node(_db_connection, _object_type):
     )
 
     _db_connection.exec_query(query)
-    print(f'-> (:ObjectType {{objectType: "{_object_type}"}}) created.')
+    print(f'→ (:ObjectType {{objectType: "{_object_type}"}}) created.')
 
 
 def add_event_type_node(_db_connection, event_type):
@@ -81,4 +81,4 @@ def add_event_type_node(_db_connection, event_type):
     )
 
     _db_connection.exec_query(query)
-    print(f'-> (:EventType {{eventType: "{event_type}"}}) created.')
+    print(f'→ (:EventType {{eventType: "{event_type}"}}) created.')
