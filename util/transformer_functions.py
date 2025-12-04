@@ -6,24 +6,55 @@ logging.getLogger("pd").setLevel(logging.ERROR)
 # Import promg
 from promg import Query
 
+def index_exists(_db_connection, index_name):
+    query = '''
+        show INDEX 
+        YIELD name
+        RETURN collect(distinct name) as index_names
+    '''
+
+    result = _db_connection.exec_query(query)
+    index_names = result[0]['index_names']
+    return index_name in index_names
+
+
+
+def create_event_timestamp_index(_db_connection):
+    index_name = 'event_timestamp_index'
+    if not index_exists(_db_connection, index_name):
+        index_query_str = """
+            CREATE INDEX $index_name IF NOT EXISTS
+            FOR (e:Event)
+            ON (e.timestamp)
+        """
+
+        index_query = Query(query_str=index_query_str,
+                            parameters={"index_name": index_name})
+
+        _db_connection.exec_query(index_query)
+        print("→ Index for :Event (timestamp) created to improve performance")
+
 
 def create_index(_db_connection, _label):
-    index_query_str = f"""
-        CREATE INDEX $index_name IF NOT EXISTS
-        FOR (n:$label)
-        ON (n.sysId)
-    """
+    index_name = f"{_label.lower()}_sysId_index"
 
-    index_query = Query(query_str=index_query_str,
-                        parameters={
-                            "index_name": f"{_label.lower()}_sysId_index"
-                        },
-                        template_string_parameters={
-                            "label": _label
-                        })
+    if not index_exists(_db_connection, index_name):
+        index_query_str = f"""
+            CREATE INDEX $index_name IF NOT EXISTS
+            FOR (n:$label)
+            ON (n.sysId)
+        """
 
-    _db_connection.exec_query(index_query)
-    print(f"Index for :{_label}(sysId)")
+        index_query = Query(query_str=index_query_str,
+                            parameters={
+                                "index_name": f"{_label.lower()}_sysId_index"
+                            },
+                            template_string_parameters={
+                                "label": _label
+                            })
+
+        _db_connection.exec_query(index_query)
+        print(f"→ Index for :{_label}(sysId) created to improve performance")
 
 
 def build_entity(_db_connection, _label, _config):
