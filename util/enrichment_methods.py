@@ -7,6 +7,8 @@ from util.transformer_functions import create_index, create_event_timestamp_inde
 logging.getLogger("neo4j").setLevel(logging.ERROR)
 logging.getLogger("pd").setLevel(logging.ERROR)
 
+import pandas as pd
+
 # Import promg
 from promg import Query
 
@@ -159,7 +161,7 @@ def build_df_edges_for_object_type(_db_connection, _object_type):
         :auto
         MATCH (o) - [:IS_OF_TYPE] -> (ot:ObjectType {objectType: $objectType})
         WITH o, ot.objectType as oType
-        MATCH (e:Event) -- (o)
+        MATCH (e:Event|HighLevelEvent) -- (o)
         WITH o, oType, e ORDER BY e.timestamp, elementId(e)
         WITH o.sysId as sysId, oType, collect(e) as events
         UNWIND range(0, size(events) - 2) AS index
@@ -185,6 +187,76 @@ def build_df_edges(_db_connection, _object_types):
             build_df_edges_for_object_type(_db_connection, _object_type)
         except Exception as e:
             print(f"Failed to build DFs for {_object_type}: {e}")
+
+
+#######################################################################
+##################### STANDARD PM TECHNIQUES ##########################
+#######################################################################
+#######################################################################
+
+def get_variants(_db_connection, _object_type, _event_types = None):
+    # TODO finish
+    # get the bag variants on the high_level
+    q_number_of_objects = '''
+        MATCH (:ObjectType {objectType: $objectType }) <- [:IS_OF_TYPE] - (o) 
+    '''
+
+    q_variants_str = '''
+        MATCH (:ObjectType {objectType: 'CI_SC'}) <- [:IS_OF_TYPE] - (o)
+        WITH o order by o.sysId SKIP $skip LIMIT $limit
+        CALL (o) {
+          MATCH (o) -- (start_e:Event|HighLevelEvent) - [:IS_OF_TYPE] -> (start_et:EventType)
+          WHERE start_et.eventType IN ['ChangeEvent', 'InteractionEvent', 'IncidentEvent', 'IncidentActivityEvent'] AND NOT EXISTS       ((:Event|HighLevelEvent) - [:DF {id: o.sysId}] -> (start_e))
+        RETURN start_e
+        } IN TRANSACTIONS
+        CALL (o) {
+          MATCH (o) -- (end_e:Event|HighLevelEvent) - [:IS_OF_TYPE] -> (end_et:EventType)
+          WHERE end_et.eventType IN ['ChangeEvent', 'InteractionEvent', 'IncidentEvent', 'IncidentActivityEvent'] AND NOT EXISTS ((end_e) - [:DF {id: o.sysId}] ->(:Event|HighLevelEvent)  ) 
+        RETURN end_e
+        } IN TRANSACTIONS
+        CALL (o, start_e, end_e) {
+          MATCH p = (start_e) - [:DF {id: o.sysId}] -> +(end_e)
+          UNWIND nodes(p) as event
+          MATCH (event) - [:IS_OF_TYPE] -> (et:EventType)
+          RETURN collect(et.eventType + ': ' + event.activity) as variant
+        } 
+        RETURN o.sysId, variant order by o.sysId SKIP $skip LIMIT $limit
+    '''
+
+    q_variants = Query(query_str=q_variants_str,
+                                    parameters={
+                                        'objectType': _object_type,
+                                        'eventTypesCheck': _event_types,
+                                        'skip': 50,
+                                        'limit': 50
+                                    })
+
+    _result = pd.DataFrame(_db_connection.exec_query(q_variants))
+    _result['%_variant'] = round(
+        _result.groupby(['variant']).count_objects.transform("sum") / sum(_result['count_objects']) * 100, 2)
+    return _result
+
+
+def get_activity_set_variants(_db_connection, _object_type, _event_types):
+    # get the bag variants on the high_level
+    q_set_activity_variants_str = '''
+        MATCH (:ObjectType {objectType: $objectType}) <- [:IS_OF_TYPE] - (o) -- (e:Event|HighLevelEvent) - [:IS_OF_TYPE] -> (et:EventType)
+        WHERE et.eventType IN $eventTypes
+        WITH o, e.activity AS activity ORDER BY activity
+        WITH o, collect(distinct activity) as set_variant
+        RETURN ltrim(reduce(initial = "", activity in set_variant | initial + " - (" + activity + ")" ), " - " ) as set_variant, count(o) as count_objects order by count_objects DESC
+    '''
+
+    q_set_activity_variants = Query(query_str=q_set_activity_variants_str,
+                                    parameters={
+                                        'objectType': _object_type,
+                                        'eventTypes': event_types
+                                    })
+
+    _result = pd.DataFrame(db_connection.exec_query(q_set_activity_variants))
+    _result['%_set_variant'] = round(
+        _result.groupby(['set_variant']).count_objects.transform("sum") / sum(_result['count_objects']) * 100, 2)
+    return _result
 
 #######################################################################
 ##################### OTHER ENRICHMENT METHODS ########################
