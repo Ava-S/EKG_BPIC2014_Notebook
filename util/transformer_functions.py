@@ -1,10 +1,12 @@
 # Import logging and surpress warnings
 import logging
+
 logging.getLogger("neo4j").setLevel(logging.ERROR)
 logging.getLogger("pd").setLevel(logging.ERROR)
 
 # Import promg
 from promg import Query
+
 
 def index_exists(_db_connection, index_name):
     query = '''
@@ -18,21 +20,24 @@ def index_exists(_db_connection, index_name):
     return index_name in index_names
 
 
-
-def create_event_timestamp_index(_db_connection):
-    index_name = 'event_timestamp_index'
+def create_event_timestamp_index(_db_connection, _label='Event', _timestamp_field='timestamp'):
+    index_name = f'{_label.lower()}_{_timestamp_field.lower()}_index'
     if not index_exists(_db_connection, index_name):
         index_query_str = """
-            CREATE INDEX $index_name IF NOT EXISTS
-            FOR (e:Event)
-            ON (e.timestamp)
-        """
+                          CREATE INDEX $index_name IF NOT EXISTS
+                              FOR (e:$label)
+                              ON (e.$timestamp_field) \
+                          """
 
         index_query = Query(query_str=index_query_str,
+                            template_string_parameters={
+                                "label": _label,
+                                "timestamp_field": _timestamp_field
+                            },
                             parameters={"index_name": index_name})
 
         _db_connection.exec_query(index_query)
-        print("→ Index for :Event (timestamp) created to improve performance")
+        print(f"→ Index for :{_label} ({_timestamp_field}) created to improve performance")
 
 
 def create_index(_db_connection, _label):
@@ -47,7 +52,7 @@ def create_index(_db_connection, _label):
 
         index_query = Query(query_str=index_query_str,
                             parameters={
-                                "index_name": f"{_label.lower()}_sysId_index"
+                                "index_name": index_name
                             },
                             template_string_parameters={
                                 "label": _label
@@ -233,5 +238,3 @@ def build_relationships(_db_connection, _relationships):
             build_relationship(_db_connection=_db_connection,
                                _type=_type,
                                _config=_config)
-
-
